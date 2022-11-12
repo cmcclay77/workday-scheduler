@@ -1,54 +1,70 @@
-$(document).ready(function () {// tells engine to load 1)html & 2)css first.
-    //display current day & time.
-    $("#currentDay").text(moment().format("MMMM Do YYYY, h:mm:ss a")); // use of moment.js
-    //assign saveBtn click listener for user input and time stamp??
-    $(".saveBtn").on("click", function () {
-        //get nearby values.
-        console.log(this);
-        var text = $(this).siblings(".description").val(); // taken the change from the sibling html description attribute
-        var time = $(this).parent().attr("id"); // taken the change from the parent html id attribute
-
-        //set items in local storage.
-        localStorage.setItem(time, text);
-    })
-    //load any saved data from LocalStorage - do this for each hour created. Should follow html 24 hour to 12 hour conversion.
-    $("#hour8 .description").val(localStorage.getItem("hour8"));
-    $("#hour9 .description").val(localStorage.getItem("hour9"));
-    $("#hour10 .description").val(localStorage.getItem("hour10"));
-    $("#hour11 .description").val(localStorage.getItem("hour11"));
-    $("#hour12 .description").val(localStorage.getItem("hour12"));
-    $("#hour13 .description").val(localStorage.getItem("hour13"));
-    $("#hour14 .description").val(localStorage.getItem("hour14"));
-    $("#hour15 .description").val(localStorage.getItem("hour15"));
-    $("#hour16 .description").val(localStorage.getItem("hour16"));
-    $("#hour17 .description").val(localStorage.getItem("hour17"));
-
-    function hourTracker() {
-        //get current number of hours.
-        var currentHour = moment().hour(); // use of moment.js
-
-        // loop over time blocks
-        $(".time-block").each(function () {
-            var blockHour = parseInt($(this).attr("id").split("hour")[1]);
-            console.log( blockHour, currentHour)
-
-            //check if we've moved past this time, click into css/html given classes of past, present, or future
-            if (blockHour < currentHour) {
-                $(this).addClass("past");
-                $(this).removeClass("future");
-                $(this).removeClass("present");
-            }
-            else if (blockHour === currentHour) {
-                $(this).removeClass("past");
-                $(this).addClass("present");
-                $(this).removeClass("future");
-            }
-            else {
-                $(this).removeClass("present");
-                $(this).removeClass("past");
-                $(this).addClass("future");
-            }
-        })
+var now = dayjs(); // real current time
+var now0 = now; // time that starts at real
+//variables for the time
+var hour = now.hour();
+var minute = now.minute();
+var second = now.second();
+//function to console.log
+function logger() {
+  for (let i = 1; i <= 9; i++) {
+    console.log(localStorage.getItem(`input${i}`));
+  }
+}
+// function to set colors
+function setColors() {
+  var thisHour0 = now0.hour(); //sets the current hour
+  for (let i = 9; i <= 17; i++) {
+    // goes through the hours and sets colors based on if its before,after or during the hour
+    if (i > thisHour0) {
+      $(`#input${i - 8}`).addClass("future");
+    } else if (i < thisHour0) {
+      $(`#input${i - 8}`).addClass("past");
+    } else {
+      $(`#input${i - 8}`).addClass("present");
     }
-    hourTracker(); //re-run function
-})
+  }
+}
+// function to set placeholders for the textboxes/areas
+function placeholderSetter() {
+  for (let i = 1; i <= 9; i++) {
+    $(`#input${i}`).val(localStorage.getItem(`input${i}`));
+  }
+}
+// function to set event listeners
+function eventListeners() {
+  for (let i = 1; i <= 9; i++) {
+    console.log(i);
+    $(`#button-addon${i}`).click(function () {
+      let input = $(`#input${i}`).val();
+      console.log(input);
+      $(`#label${i}`).text(input);
+      localStorage.setItem(`input${i}`, input);
+    });
+  }
+}
+function setCurrentDay() {
+  $("#currentDay").text(
+    "Today is " +
+      now.format("dddd, MMMM D, YYYY" + ` (${hour}:${minute}:${second})`)
+  ); // sets the date at the top
+}
+
+setCurrentDay();
+setColors();
+logger();
+placeholderSetter();
+eventListeners();
+
+// time interval to call the functions every second
+setInterval(function () {
+  now = dayjs();
+  now0 = now;
+  hour = now.hour();
+  thisHour0 = now0.hour();
+  minute = now.minute();
+  second = now.second();
+  setCurrentDay();
+  setColors();
+  logger();
+  // placeholderSetter();
+}, 1000);
