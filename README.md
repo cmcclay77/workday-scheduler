@@ -9,7 +9,7 @@ The live link is:
 
 ## Screenshot
 
-![Alt text](./assets/images/screenshot-workday-scheduler.jpg?raw=true "Screenshot")
+![Alt text](./assets/images/screenshot-work-day-scheduler.jpg?raw=true "Screenshot")
 
 ## Credits
 
