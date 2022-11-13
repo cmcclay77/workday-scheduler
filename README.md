@@ -5,7 +5,7 @@
 This project was to use JQuery and JavaScript to create a work day Scheduler.  This can be used to plan out your workday by typing information into the text area and saving it.  The saved information will be held in local storage.  The time blocks are color coded also.  The top of the page displays the current date and time with a running clock.
 ## Usage
 
-The live link is: [Link to JavaScript Code Quiz](https://cmcclay77.github.io/workday-scheduler)
+The live link is: [Link to Work Day Scheduler](https://cmcclay77.github.io/workday-scheduler)
 
 ## Screenshot
 
