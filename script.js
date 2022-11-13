@@ -1,70 +1,55 @@
-var now = dayjs(); // real current time
-var now0 = now; // time that starts at real
-//variables for the time
-var hour = now.hour();
-var minute = now.minute();
-var second = now.second();
-//function to console.log
-function logger() {
-  for (let i = 1; i <= 9; i++) {
-    console.log(localStorage.getItem(`input${i}`));
-  }
-}
-// function to set colors
-function setColors() {
-  var thisHour0 = now0.hour(); //sets the current hour
-  for (let i = 9; i <= 17; i++) {
-    // goes through the hours and sets colors based on if its before,after or during the hour
-    if (i > thisHour0) {
-      $(`#input${i - 8}`).addClass("future");
-    } else if (i < thisHour0) {
-      $(`#input${i - 8}`).addClass("past");
-    } else {
-      $(`#input${i - 8}`).addClass("present");
-    }
-  }
-}
-// function to set placeholders for the textboxes/areas
-function placeholderSetter() {
-  for (let i = 1; i <= 9; i++) {
-    $(`#input${i}`).val(localStorage.getItem(`input${i}`));
-  }
-}
-// function to set event listeners
-function eventListeners() {
-  for (let i = 1; i <= 9; i++) {
-    console.log(i);
-    $(`#button-addon${i}`).click(function () {
-      let input = $(`#input${i}`).val();
-      console.log(input);
-      $(`#label${i}`).text(input);
-      localStorage.setItem(`input${i}`, input);
-    });
-  }
-}
-function setCurrentDay() {
-  $("#currentDay").text(
-    "Today is " +
-      now.format("dddd, MMMM D, YYYY" + ` (${hour}:${minute}:${second})`)
-  ); // sets the date at the top
-}
+$(document).ready(function() {
+  console.log("Ready!");
+});
+  //Display current date and time
+  let now = moment().format("dddd, MMMM Do YYYY");
+  let displayDate = document.getElementById("currentDay");
+  displayDate.innerHTML = now;
+  let currentHour = moment().format("HH");
 
-setCurrentDay();
-setColors();
-logger();
-placeholderSetter();
-eventListeners();
+  //Past, present, and future functionality -
+  //Compare timeblock time with current time to determine whether
+  //activity is in the past, present, or future 
+  $(".time-div").each(function() {
+      var timeDiv = $(this).attr("id").split("-")[1];
 
-// time interval to call the functions every second
-setInterval(function () {
-  now = dayjs();
-  now0 = now;
-  hour = now.hour();
-  thisHour0 = now0.hour();
-  minute = now.minute();
-  second = now.second();
-  setCurrentDay();
-  setColors();
-  logger();
-  // placeholderSetter();
-}, 1000);
+      if (currentHour == timeDiv) {
+          $(this).addClass("present");
+          $(this).children(".description").addClass("present");
+ 
+      } else if (currentHour < timeDiv) {
+          $(this).removeClass("present");
+          $(this).addClass("future");
+
+      } else if (currentHour > timeDiv) {
+          $(this).removeClass("future");
+          $(this).addClass("past");
+      }
+  });
+
+  //Save data to local storage
+  $(".saveBtn").click(function (event) {
+      event.preventDefault();
+      var value = $(this).siblings(".time-block").val();
+      var time = $(this).parent().attr("id").split("-")[1];
+      localStorage.setItem(time,value);
+  });
+
+  //Retrieve data from local storage 
+  $("#hour-09 .time-block").val(localStorage.getItem("09"));
+  $("#hour-10 .time-block").val(localStorage.getItem("10"));
+  $("#hour-11 .time-block").val(localStorage.getItem("11"));
+  $("#hour-12 .time-block").val(localStorage.getItem("12"));
+  $("#hour-13 .time-block").val(localStorage.getItem("13"));
+  $("#hour-14 .time-block").val(localStorage.getItem("14"));
+  $("#hour-15 .time-block").val(localStorage.getItem("15"));
+  $("#hour-16 .time-block").val(localStorage.getItem("16"));
+  $("#hour-17 .time-block").val(localStorage.getItem("17"));
+
+   
+  //Clear button function for clearing content and local storage
+   $("#clearFieldsBtn").click(function(event) {
+      event.preventDefault;
+      $("textArea").val("");
+      localStorage.clear();
+  });
